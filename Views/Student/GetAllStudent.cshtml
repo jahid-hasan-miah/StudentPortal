@@ -1,7 +1,22 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "GetAllStudent";
 }
+<link href="~/css/site.css" rel="stylesheet" />
+<div class="container">
+        <div class="row">
+            @foreach (var student in Model)
+            {
+                <div class="card col-lg-3 col-md-6 img-thumbnail m-lg-2 m-1">
+                    <img class="card-img-top img-fluid d-block d-lg-flex d-md-flex h-50" src="@student.ProfilePicUri" alt="Card image cap" />
+                    <div class="card-body">
+                        <h5 class="card-title">@student.Name</h5>
+                        <p class="card-text">@student.Group</p>
+                        <p class="card-text">@student.Roll</p>
+                        <a asp-controller="Student" asp-action="StudentById" asp-route-id="@student.Id" asp-route-name="@student.Name" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            }
+        </div>
+</div>
 
-<h1>GetAllStudent</h1>
 
