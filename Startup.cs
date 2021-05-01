@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Student_Portal.Data;
+using Student_Portal.Models;
 using Student_Portal.Repository;
 using System;
 using System.Collections.Generic;
@@ -56,8 +57,7 @@ namespace Student_Portal
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-
-            services.AddControllersWithViews();
+            services.Configure<SmtpConfiguration>(Configuration.GetSection("Smtp"));
             services.AddScoped<StudentRepository, StudentRepository>();
 
             services.AddControllersWithViews();
