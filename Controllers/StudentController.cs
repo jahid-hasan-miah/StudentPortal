@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using System.Collections;
 
 namespace Student_Portal.Controllers
 {
@@ -23,6 +24,7 @@ namespace Student_Portal.Controllers
         {
             var student = await _studentRepository.GetAllStudent();
             return View(student);
+            
         }
 
         public async Task<IActionResult> StudentById(int id)

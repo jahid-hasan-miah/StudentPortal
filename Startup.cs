@@ -37,6 +37,15 @@ namespace Student_Portal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                    });
+            });
+
             services.AddDbContext<StudentContext>(
                 options =>options.UseSqlServer("Server = .;Database = StudentInfo;Trusted_Connection=True"));
 
@@ -83,10 +92,10 @@ namespace Student_Portal
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthorization();
             app.UseSession();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
