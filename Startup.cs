@@ -57,7 +57,7 @@ namespace Student_Portal
 
             services.AddDbContext<StudentContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
-            //services.AddTransient<StudentContext>();
+
 
             services.ConfigureApplicationCookie(options =>
             {

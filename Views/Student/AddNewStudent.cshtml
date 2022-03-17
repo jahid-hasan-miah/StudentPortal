@@ -14,7 +14,8 @@
         </div>
     }
     <img class="float-lg-left float-md-left float-sm-none col-6" src="~/Images/school.jpg"/>
-    <form class="float-md-right float-lg-right float-sm-none col-sm-12 col-md-6 col-lg-6" enctype="multipart/form-data" method="post" asp-controller="Student" asp-action="AddNewStudent">
+    <form class="float-md-right float-lg-right float-sm-none col-sm-12 col-md-6 col-lg-6" 
+          enctype="multipart/form-data" method="post" asp-controller="Student" asp-action="AddNewStudent">
         <div class="form-group">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control" />
