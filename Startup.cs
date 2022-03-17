@@ -47,7 +47,7 @@ namespace Student_Portal
             });
 
             services.AddDbContext<StudentContext>(
-                options =>options.UseSqlServer("Server = .;Database = StudentInfo;Trusted_Connection=True"));
+                options =>options.UseSqlServer("Server = DESKTOP-K7QPJAH\\SQLEXPRESS;Database = StudentInfo;Trusted_Connection=True"));
 
             services.ConfigureApplicationCookie(options =>
             {
