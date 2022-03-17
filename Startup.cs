@@ -33,10 +33,19 @@ namespace Student_Portal
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment WebHostEnvironment { get; set; }
 
+        private (string connectionString, string migrationAssemblyName) GetConnectionStringAndAssemblyName()
+        {
+            var connectionStringName = "DefaultConnection";
+            var connectionString = Configuration.GetConnectionString(connectionStringName);
+            var migrationAssemblyName = typeof(Startup).Assembly.FullName;
+            return (connectionString, migrationAssemblyName);
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionInfo = GetConnectionStringAndAssemblyName();
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -46,8 +55,9 @@ namespace Student_Portal
                     });
             });
 
-            services.AddDbContext<StudentContext>(
-                options =>options.UseSqlServer("Server = .;Database = StudentInfo;Trusted_Connection=True"));
+            services.AddDbContext<StudentContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
+            //services.AddTransient<StudentContext>();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -67,7 +77,7 @@ namespace Student_Portal
                 options.Cookie.IsEssential = true;
             });
             services.Configure<SmtpConfiguration>(Configuration.GetSection("Smtp"));
-            services.AddScoped<StudentRepository, StudentRepository>();
+            services.AddTransient<StudentRepository, StudentRepository>();
 
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();

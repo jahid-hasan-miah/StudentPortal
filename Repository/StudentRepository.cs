@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Student_Portal.Data;
 using Student_Portal.Models;
 using System;
@@ -10,11 +11,14 @@ namespace Student_Portal.Repository
 {
     public class StudentRepository
     {
-        private readonly StudentContext _context = null;
-        public StudentRepository(StudentContext context)
+        private readonly DbContextOptionsBuilder<StudentContext> optionsBuilder = null;
+
+        public StudentRepository(IConfiguration configuration)
         {
-            _context = context;
+            this.optionsBuilder = new DbContextOptionsBuilder<StudentContext>()
+                .UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         }
+
         public async Task<int> AddNewStudent(StudentModel model)
         {
             var student = new Student()
@@ -24,17 +28,24 @@ namespace Student_Portal.Repository
                 Roll = model.Roll,
                 ProfilePicUri = model.ProfilePicUri
             };
-            await _context.StudentInfo.AddAsync(student);
-            await _context.SaveChangesAsync();
-
+            using (var db = new StudentContext(this.optionsBuilder.Options))
+            {
+                await db.StudentInfo.AddAsync(student);
+                await db.SaveChangesAsync();
+            }
             return student.Id;
         }
 
         public async Task<List<StudentModel>> GetAllStudent()
         {
             var studentInfo = new List<StudentModel>();
-            var student =await _context.StudentInfo.ToListAsync();
-            if(student!=null)
+            List<Student> student = new List<Student>();
+
+            using (var db = new StudentContext(this.optionsBuilder.Options))
+            {
+                student = await db.StudentInfo.ToListAsync();
+            }
+            if (student!=null)
             {
                 foreach(var studens in student)
                 {
@@ -49,22 +60,35 @@ namespace Student_Portal.Repository
             }
             return studentInfo;
         }
-        public async Task<StudentModel> GetStudentById(int ID)
+
+        public List<Student> GetStudent()
         {
-            var data = await _context.StudentInfo.FindAsync(ID);
-            if(data!= null)
+            
+            List<Student> student = new List<Student>();
+
+            using (var db = new StudentContext(this.optionsBuilder.Options))
             {
-                var studentInformation = new StudentModel()
-                {
-                    Id = data.Id,
-                    Name = data.Name,
-                    Group = data.Group,
-                    Roll = data.Roll,
-                    ProfilePicUri = data.ProfilePicUri
-                };
-                return studentInformation;
+                student = db.StudentInfo.ToList();
             }
-            return null;
+            return student;
         }
+
+        //public async Task<StudentModel> GetStudentById(int ID)
+        //{
+        //    var data = await _context.StudentInfo.FindAsync(ID);
+        //    if(data!= null)
+        //    {
+        //        var studentInformation = new StudentModel()
+        //        {
+        //            Id = data.Id,
+        //            Name = data.Name,
+        //            Group = data.Group,
+        //            Roll = data.Roll,
+        //            ProfilePicUri = data.ProfilePicUri
+        //        };
+        //        return studentInformation;
+        //    }
+        //    return null;
+        //}
     }
 }
